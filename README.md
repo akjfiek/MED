@@ -2,7 +2,7 @@
 
 **Global Context Meets Local Quality: A Mamba-Enhanced Detector for Underwater Imagery**
 
-Yaoming Zhuang<sup>1,*</sup>, Zirui Fang<sup>2</sup>, Jiaming Liu<sup>1</sup>, Zixuan Li<sup>2</sup>, Weijia Chen<sup>3</sup>, Yuetong Ma<sup>2</sup>, Zhanlin Liu<sup>4</sup>, and Qiong Zhou<sup>5,*</sup>
+Yaoming Zhuang<sup>1,&#42;</sup>, Zirui Fang<sup>2</sup>, Jiaming Liu<sup>1</sup>, Zixuan Li<sup>2</sup>, Weijia Chen<sup>3</sup>, Yuetong Ma<sup>2</sup>, Zhanlin Liu<sup>4</sup>, and Qiong Zhou<sup>5,&#42;</sup>
 
 <sup>1</sup> Faculty of Robot Science and Engineering, Northeastern University, China  
 <sup>2</sup> College of Information Science and Engineering, Northeastern University, China  
@@ -11,7 +11,7 @@ Yaoming Zhuang<sup>1,*</sup>, Zirui Fang<sup>2</sup>, Jiaming Liu<sup>1</sup>, Z
 <sup>5</sup> School of Electronic and Electrical Engineering, Anhui Agricultural University, China
 
 Yaoming Zhuang and Zirui Fang are co-first authors.  
-<sup>*</sup> Corresponding authors: [Yaoming Zhuang](mailto:zhuangyaoming@mail.neu.edu.cn) and [Qiong Zhou](mailto:zhouqiong@ahau.edu.cn).
+<sup>&#42;</sup> Corresponding authors: [Yaoming Zhuang](mailto:zhuangyaoming@mail.neu.edu.cn) and [Qiong Zhou](mailto:zhouqiong@ahau.edu.cn).
 
 **IEEE Signal Processing Letters, vol. 33, pp. 3551-3555, 2026**  
 [Paper](https://doi.org/10.1109/LSP.2026.3727946) · [BibTeX](CITATION.bib)
@@ -19,6 +19,12 @@ Yaoming Zhuang and Zirui Fang are co-first authors.
 This repository accompanies our paper on MED, a YOLOv11s-based detector for underwater imagery. MED combines global context modeling, adaptive multi-scale fusion, and localization-quality calibration to address attenuation, non-uniform turbidity, and scattering-induced boundary uncertainty.
 
 > **Release scope:** This repository provides the Mamba backbone and SAQE head source components, paper figures, and citation information. It is a release of selected modules rather than a complete detector package. Trained weights, the DGAF fusion implementation, and end-to-end training/evaluation scripts are not included.
+
+## Pipeline
+
+![Overall MED pipeline](figures/architecture.png)
+
+*Overall framework of MED (Fig. 1): Mamba-enhanced backbone, DGAF multi-scale fusion, and SAQE detection head.*
 
 ## Released Code
 
@@ -42,11 +48,50 @@ The following results reproduce the MED rows in the paper's comparative experime
 
 These are published results, not reproduced measurements from this module-only repository. The paper's ablation table (Table I) separately reports results with 95% confidence intervals over three seeds.
 
-## Architecture
+## Comparative Results on UDD and URPC2020
 
-![Overall MED architecture](figures/architecture.png)
+The table below reproduces all model rows and selected columns from Table II of the published paper. All mAP values are percentages. Precision, recall, the two-dataset averages, and publication-source columns are omitted for readability. Reference numbers refer to the paper's bibliography; MED corresponds to the paper's "Ours" row. A dash indicates that GFLOPs were not reported in the paper.
 
-*Overall framework of MED (Fig. 1).* 
+| Model | Parameters (M) | GFLOPs | UDD mAP@0.5 (%) | UDD mAP@0.5:0.95 (%) | URPC2020 mAP@0.5 (%) | URPC2020 mAP@0.5:0.95 (%) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| YOLOv6s [19] | 16.29 | 43.7 | 65.5 | 28.4 | 83.9 | 49.2 |
+| YOLOv7s [20] | 9.33 | 26.0 | 62.0 | 24.1 | 82.2 | 44.3 |
+| YOLOv8s [21] | 11.13 | 28.4 | 65.8 | 28.4 | 84.6 | 50.1 |
+| YOLOv10s [3] | 8.04 | 24.5 | 68.4 | 28.8 | 84.5 | 49.6 |
+| YOLOv12s [22] | 9.07 | 19.3 | 67.8 | 29.2 | 85.0 | 50.4 |
+| Hyper-YOLO-s [23] | 13.52 | 33.8 | 67.0 | 29.0 | 84.8 | 50.6 |
+| Mamba-YOLO-B [24] | 21.80 | 49.6 | 67.2 | 29.0 | 84.6 | 50.1 |
+| RT-DETR(Res50) [25] | 32.66 | 85.1 | 59.2 | 26.2 | 84.2 | 48.2 |
+| Dynamic-YOLO [26] | 8.21 | 29.4 | 67.6 | 28.2 | 84.4 | 50.0 |
+| VajraV1-small [27] | 11.41 | — | 66.6 | 28.7 | 83.0 | 48.5 |
+| U-DECN [28] | 82.00 | 170 | 59.4 | 23.1 | 82.1 | 42.2 |
+| LUOD-YOLO-s [29] | 5.91 | 19.9 | 64.8 | 28.1 | 84.3 | 49.5 |
+| SU-YOLO [30] | 6.97 | — | 63.3 | 26.2 | 76.8 | 39.3 |
+| EAST-YOLO [9] | 2.69 | 6.8 | 67.9 | 28.2 | 82.5 | 47.7 |
+| YOLOv11s [31] | 9.41 | 21.3 | 68.0 | 28.1 | 84.9 | 50.8 |
+| **MED (Ours)** | **15.50** | **30.1** | **72.4** | **31.0** | **86.6** | **51.0** |
+
+## Comparative Results on RUOD
+
+The table below reproduces all model rows and the overall metrics from Table III of the published paper. All mAP values are percentages. Publication-source and category-specific AP columns are omitted; the complete per-category AP results are available in Table III of the paper. Reference numbers refer to the paper's bibliography; MED corresponds to the paper's "Ours" row.
+
+| Model | Parameters (M) | GFLOPs | RUOD mAP@0.5 (%) | RUOD mAP@0.5:0.95 (%) |
+| --- | ---: | ---: | ---: | ---: |
+| YOLOv5s [32] | 7.03 | 16.5 | 85.9 | 62.1 |
+| YOLOv6s [19] | 16.29 | 43.7 | 85.2 | 62.2 |
+| YOLOv8s [21] | 11.13 | 28.4 | 86.3 | 62.9 |
+| YOLOv9s [33] | 7.17 | 26.7 | 86.4 | 63.9 |
+| YOLOv10s [3] | 8.04 | 24.5 | 86.2 | 63.3 |
+| YOLOv12s [22] | 9.07 | 19.3 | 86.5 | 63.9 |
+| YOLOv13s [34] | 9.00 | 20.7 | 85.9 | 62.9 |
+| YOLO26s [35] | 9.77 | 27.8 | 86.2 | 63.6 |
+| Mamba-YOLO-B [24] | 21.80 | 49.6 | 86.3 | 63.6 |
+| RT-DETR(Res50) [25] | 32.66 | 85.1 | 85.4 | 61.1 |
+| EAST-YOLO [9] | 2.69 | 6.8 | 84.2 | 60.4 |
+| YOLOv11s [31] | 9.41 | 21.3 | 85.0 | 62.0 |
+| **MED (Ours)** | **15.50** | **30.1** | **87.1** | **64.2** |
+
+## Method Components
 
 MED combines three components:
 
